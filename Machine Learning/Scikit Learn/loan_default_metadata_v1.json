@@ -1,0 +1,17 @@
+{
+  "project": "Loan Default Prediction",
+  "version": "1.0",
+  "algorithm": "GradientBoostingClassifier",
+  "test_roc_auc": 0.8572,
+  "test_f1": 0.6838,
+  "test_accuracy": 0.815,
+  "n_features": 12,
+  "trained_on": "2026-06-02T10:31:01.350929",
+  "best_params": {
+    "clf__learning_rate": 0.01754,
+    "clf__max_depth": 2,
+    "clf__min_samples_leaf": 11,
+    "clf__n_estimators": 108,
+    "clf__subsample": 1.0
+  }
+}
