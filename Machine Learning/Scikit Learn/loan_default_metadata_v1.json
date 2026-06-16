@@ -6,7 +6,7 @@
   "test_f1": 0.6838,
   "test_accuracy": 0.815,
   "n_features": 12,
-  "trained_on": "2026-06-03T11:21:38.776526",
+  "trained_on": "2026-06-09T11:04:20.202502",
   "best_params": {
     "clf__learning_rate": 0.01754,
     "clf__max_depth": 2,

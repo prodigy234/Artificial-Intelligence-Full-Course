@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unsupervised Learning Masterclass | Prodigy Training Hub</title>
+<style>
+  :root {
+    --blue:#378ADD;--teal:#1D9E75;--coral:#D85A30;--amber:#BA7517;
+    --purple:#534AB7;--green:#639922;--pink:#D4537E;--gray:#5F5E5A;
+    --bg:#ffffff;--bg2:#f7f6f2;--bg3:#eeecea;--border:#e0ded8;
+    --text:#1a1a18;--text2:#5a5a55;--text3:#8a8a85;
+    --radius:8px;--radius-lg:12px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#1a1a18;--bg2:#24241f;--bg3:#2e2e28;--border:#3a3a34;
+          --text:#e8e6de;--text2:#aaa89e;--text3:#6a6860;}
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);
+       color:var(--text);font-size:15px;line-height:1.7}
+  .wrapper{max-width:1050px;margin:0 auto;padding:0 24px 60px}
+
+  .site-header{background:linear-gradient(135deg,#0f6e56 0%,#1a5fa8 55%,#534AB7 100%);
+               color:#fff;padding:40px 32px 32px;
+               border-radius:0 0 var(--radius-lg) var(--radius-lg);margin-bottom:32px}
+  .site-header h1{font-size:28px;font-weight:600;margin-bottom:4px}
+  .site-header .sub{font-size:15px;opacity:.88;margin-bottom:12px}
+  .trainer-badge{display:inline-block;background:rgba(255,255,255,.18);
+                 border:1px solid rgba(255,255,255,.35);border-radius:99px;
+                 padding:5px 16px;font-size:13px;font-weight:500}
+
+  .toc{background:var(--bg2);border:0.5px solid var(--border);
+       border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:28px}
+  .toc h2{font-size:15px;font-weight:600;color:var(--text2);
+           text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+  .toc-link{display:block;padding:7px 12px;background:var(--bg);
+             border:0.5px solid var(--border);border-radius:var(--radius);
+             color:var(--teal);text-decoration:none;font-size:13px;transition:all .15s}
+  .toc-link:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+  .section{margin-bottom:56px;scroll-margin-top:20px}
+  .section-header{background:var(--bg2);border-left:4px solid var(--teal);
+                  border-radius:0 var(--radius-lg) var(--radius-lg) 0;
+                  padding:18px 22px;margin-bottom:20px}
+  .section-header h2{font-size:22px;font-weight:600;margin-bottom:4px}
+  .section-header .desc{font-size:14px;color:var(--text2)}
+  .tags{margin-top:8px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 10px;
+       border-radius:99px;margin-right:5px}
+  .tag-cls{background:#eaf3de;color:#3B6D11}
+  .tag-dr{background:#eeedfe;color:#3C3489}
+  .tag-assoc{background:#faeeda;color:#854F0B}
+  .tag-anom{background:#faece7;color:#712B13}
+  @media(prefers-color-scheme:dark){
+    .tag-cls{background:#17340433;color:#97C459}
+    .tag-dr{background:#26215c33;color:#AFA9EC}
+    .tag-assoc{background:#41240233;color:#EF9F27}
+    .tag-anom{background:#4a1b0c33;color:#F0997B}
+  }
+
+  .info{border-left:3px solid;border-radius:0 var(--radius) var(--radius) 0;
+        padding:12px 16px;margin-bottom:14px;font-size:14px}
+  .info-when{border-color:var(--teal);background:#e1f5ee22}
+  .info-why{border-color:var(--blue);background:#e6f1fb22}
+  .info-interp{border-color:var(--amber);background:#faeeda22}
+  .info-case{border-color:var(--pink);background:#fbeaf022}
+  .info-warn{border-color:var(--coral);background:#faece722}
+  @media(prefers-color-scheme:dark){
+    .info-when{background:#0f6e5633}.info-why{background:#0c447c33}
+    .info-interp{background:#63380633}.info-case{background:#4b152833}
+    .info-warn{background:#4a1b0c33}
+  }
+  .info strong{font-weight:600}
+
+  .code-block{background:#1e1e1e;border-radius:var(--radius-lg);
+              overflow:hidden;margin-bottom:16px}
+  .code-header{display:flex;justify-content:space-between;align-items:center;
+               padding:8px 14px;background:#2d2d2a;border-bottom:0.5px solid #3a3a34}
+  .code-lang{font-size:11px;color:#aaa89e;font-family:monospace}
+  .copy-btn{font-size:11px;padding:3px 10px;background:transparent;
+            border:0.5px solid #3a3a34;border-radius:var(--radius);
+            color:#aaa89e;cursor:pointer}
+  .copy-btn:hover{background:#3a3a34;color:#e8e6de}
+  pre{padding:16px 18px;overflow-x:auto;color:#d4d2ca;
+      font-family:'Cascadia Code','Fira Code','Consolas',monospace;
+      font-size:13px;line-height:1.65}
+
+  .table-wrap{overflow-x:auto;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--bg3);padding:8px 12px;text-align:left;
+     border:0.5px solid var(--border);font-weight:600}
+  td{padding:7px 12px;border:0.5px solid var(--border);
+     color:var(--text2);vertical-align:top}
+
+  .formula{background:var(--bg3);border-radius:var(--radius);
+           padding:10px 16px;font-family:'Cascadia Code','Fira Code',monospace;
+           font-size:13px;margin-bottom:14px;border:0.5px solid var(--border);
+           white-space:pre-wrap}
+
+  .diagram{background:var(--bg);border:0.5px solid var(--border);
+           border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px}
+
+  p{margin-bottom:10px}ul,ol{margin:0 0 12px 20px}
+  li{margin-bottom:4px;font-size:14px;color:var(--text2)}
+  h3{font-size:17px;font-weight:600;margin:20px 0 8px}
+  h4{font-size:15px;font-weight:600;margin:14px 0 6px}
+  .back-top{display:inline-block;margin-top:20px;color:var(--teal);
+            text-decoration:none;font-size:13px}
+  .back-top:hover{text-decoration:underline}
+
+  footer{border-top:0.5px solid var(--border);margin-top:48px;
+         padding-top:24px;color:var(--text3);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<header class="site-header">
+  <h1>Unsupervised Learning — Complete Masterclass Notes</h1>
+  <p class="sub">Clustering · Dimensionality Reduction · Association Rules · Anomaly Detection · Python code · Diagrams</p>
+  <span class="trainer-badge">Trainer: Kajola Gbenga &nbsp;|&nbsp; CEO, Prodigy Training Hub</span>
+</header>
+
+<nav class="toc">
+  <h2>Table of Contents</h2>
+  <div class="toc-grid">
+    <a class="toc-link" href="#overview">1. What is Unsupervised Learning?</a>
+    <a class="toc-link" href="#kmeans">2. K-Means Clustering</a>
+    <a class="toc-link" href="#hierarchical">3. Hierarchical Clustering</a>
+    <a class="toc-link" href="#dbscan">4. DBSCAN</a>
+    <a class="toc-link" href="#gmm">5. Gaussian Mixture Models</a>
+    <a class="toc-link" href="#pca">6. PCA</a>
+    <a class="toc-link" href="#tsne">7. t-SNE</a>
+    <a class="toc-link" href="#umap">8. UMAP</a>
+    <a class="toc-link" href="#autoencoder">9. Autoencoders</a>
+    <a class="toc-link" href="#apriori">10. Association Rules</a>
+    <a class="toc-link" href="#anomaly">11. Anomaly Detection</a>
+    <a class="toc-link" href="#eval">12. Evaluation Metrics</a>
+  </div>
+</nav>
+
+<!-- SECTION 1 -->
+<section class="section" id="overview">
+  <div class="section-header">
+    <h2>1. What is Unsupervised Learning?</h2>
+    <p class="desc">Finding hidden structure in unlabeled data — no target variable y is provided.</p>
+  </div>
+  <p>In supervised learning we have (X, y) — labeled pairs. In <strong>unsupervised learning</strong> we only have X — <strong>no labels</strong>. The algorithm must discover structure on its own.</p>
+
+  <h3>Three Main Paradigms</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Paradigm</th><th>Goal</th><th>Algorithms</th></tr>
+    <tr><td><strong>Clustering</strong></td><td>Group similar data points</td><td>K-Means, DBSCAN, Hierarchical, GMM</td></tr>
+    <tr><td><strong>Dimensionality Reduction</strong></td><td>Compress features while preserving structure</td><td>PCA, t-SNE, UMAP, Autoencoders</td></tr>
+    <tr><td><strong>Association Rules</strong></td><td>Find co-occurrence patterns in transactions</td><td>Apriori, FP-Growth</td></tr>
+    <tr><td><strong>Anomaly Detection</strong></td><td>Identify rare unusual data points</td><td>Isolation Forest, LOF, One-Class SVM</td></tr>
+  </table></div>
+
+  <h3>Supervised vs Unsupervised</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Feature</th><th>Supervised</th><th>Unsupervised</th></tr>
+    <tr><td>Labels (y)</td><td>Required</td><td>Not available</td></tr>
+    <tr><td>Goal</td><td>Predict output</td><td>Discover structure</td></tr>
+    <tr><td>Evaluation</td><td>Accuracy, F1, R²</td><td>Silhouette, Inertia, visual</td></tr>
+  </table></div>
+
+  <h3>Workflow Diagram</h3>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+      <rect x="10"  y="55" width="130" height="50" rx="8" fill="#e1f5ee" stroke="#1D9E75" stroke-width="0.8"/>
+      <text x="75"  y="77" font-family="sans-serif" font-size="12" font-weight="600" fill="#04342C" text-anchor="middle">Raw Data (X only)</text>
+      <text x="75"  y="95" font-family="sans-serif" font-size="11" fill="#0F6E56" text-anchor="middle">No labels</text>
+      <line x1="142" y1="80" x2="178" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a1)"/>
+      <rect x="180" y="55" width="140" height="50" rx="8" fill="#eeedfe" stroke="#534AB7" stroke-width="0.8"/>
+      <text x="250" y="77" font-family="sans-serif" font-size="12" font-weight="600" fill="#26215C" text-anchor="middle">Preprocess</text>
+      <text x="250" y="95" font-family="sans-serif" font-size="11" fill="#3C3489" text-anchor="middle">Scale · Clean</text>
+      <line x1="322" y1="80" x2="358" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a1)"/>
+      <rect x="360" y="55" width="140" height="50" rx="8" fill="#faeeda" stroke="#BA7517" stroke-width="0.8"/>
+      <text x="430" y="77" font-family="sans-serif" font-size="12" font-weight="600" fill="#412402" text-anchor="middle">Algorithm</text>
+      <text x="430" y="95" font-family="sans-serif" font-size="11" fill="#633806" text-anchor="middle">Cluster/Reduce/Mine</text>
+      <line x1="502" y1="80" x2="538" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a1)"/>
+      <rect x="540" y="55" width="128" height="50" rx="8" fill="#eaf3de" stroke="#639922" stroke-width="0.8"/>
+      <text x="604" y="77" font-family="sans-serif" font-size="12" font-weight="600" fill="#173404" text-anchor="middle">Insights</text>
+      <text x="604" y="95" font-family="sans-serif" font-size="11" fill="#3B6D11" text-anchor="middle">Segments · Rules</text>
+    </svg>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 2: K-MEANS -->
+<section class="section" id="kmeans">
+  <div class="section-header">
+    <h2>2. K-Means Clustering</h2>
+    <div class="tags"><span class="tag tag-cls">Clustering</span></div>
+    <p class="desc">Partition data into K clusters by iteratively assigning points to nearest centroid and recomputing centroids.</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> Known (or estimable) K. Clusters are roughly spherical and similarly sized. Large datasets — very fast. Customer segmentation, document clustering, image compression.</div>
+  <div class="info info-warn"><strong>Avoid when:</strong> Clusters are non-spherical, elongated, or irregular. Clusters have very different sizes or densities. Number of K truly unknown (use Elbow + Silhouette to estimate it).</div>
+
+  <h3>Algorithm Steps</h3>
+  <div class="formula">1. Initialise K centroids (K-Means++ default — smarter than random)
+2. Assign each point to the nearest centroid (Euclidean distance)
+3. Recompute each centroid = mean of all points in that cluster
+4. Repeat steps 2–3 until centroids stop moving (convergence)</div>
+
+  <h3>K-Means Iteration Diagram</h3>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+      <!-- Step boxes -->
+      <rect x="10" y="70" width="130" height="60" rx="8" fill="#eeedfe" stroke="#534AB7" stroke-width="0.8"/>
+      <text x="75" y="94" font-family="sans-serif" font-size="12" font-weight="600" fill="#26215C" text-anchor="middle">Initialise</text>
+      <text x="75" y="110" font-family="sans-serif" font-size="11" fill="#3C3489" text-anchor="middle">K random centroids</text>
+      <text x="75" y="125" font-family="sans-serif" font-size="10" fill="#534AB7" text-anchor="middle">(K-Means++)</text>
+      <line x1="142" y1="100" x2="178" y2="100" stroke="#888" stroke-width="1" marker-end="url(#a2)"/>
+      <rect x="180" y="70" width="140" height="60" rx="8" fill="#e6f1fb" stroke="#378ADD" stroke-width="0.8"/>
+      <text x="250" y="94" font-family="sans-serif" font-size="12" font-weight="600" fill="#042C53" text-anchor="middle">Assign</text>
+      <text x="250" y="110" font-family="sans-serif" font-size="11" fill="#0C447C" text-anchor="middle">Each point → nearest</text>
+      <text x="250" y="125" font-family="sans-serif" font-size="10" fill="#378ADD" text-anchor="middle">centroid (Euclidean)</text>
+      <line x1="322" y1="100" x2="358" y2="100" stroke="#888" stroke-width="1" marker-end="url(#a2)"/>
+      <rect x="360" y="70" width="140" height="60" rx="8" fill="#faeeda" stroke="#BA7517" stroke-width="0.8"/>
+      <text x="430" y="94" font-family="sans-serif" font-size="12" font-weight="600" fill="#412402" text-anchor="middle">Update</text>
+      <text x="430" y="110" font-family="sans-serif" font-size="11" fill="#633806" text-anchor="middle">Centroid = mean of</text>
+      <text x="430" y="125" font-family="sans-serif" font-size="10" fill="#BA7517" text-anchor="middle">cluster members</text>
+      <line x1="502" y1="100" x2="538" y2="100" stroke="#888" stroke-width="1" marker-end="url(#a2)"/>
+      <rect x="540" y="70" width="128" height="60" rx="8" fill="#eaf3de" stroke="#639922" stroke-width="0.8"/>
+      <text x="604" y="94" font-family="sans-serif" font-size="12" font-weight="600" fill="#173404" text-anchor="middle">Converged?</text>
+      <text x="604" y="110" font-family="sans-serif" font-size="11" fill="#3B6D11" text-anchor="middle">No → repeat</text>
+      <text x="604" y="125" font-family="sans-serif" font-size="10" fill="#639922" text-anchor="middle">Yes → done</text>
+      <!-- Loop arrow -->
+      <path d="M604 132 Q604 175 430 175 Q250 175 250 132" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a2)"/>
+      <text x="430" y="190" font-family="sans-serif" font-size="11" fill="#888" text-anchor="middle">Repeat until convergence</text>
+    </svg>
+  </div>
+
+  <div class="info info-interp"><strong>How to interpret results:</strong><br>
+  • <strong>Inertia</strong>: total within-cluster sum of squares. Lower = tighter clusters. Use Elbow plot to choose K.<br>
+  • <strong>Silhouette score</strong>: -1 to 1. &gt; 0.5 = well-defined clusters. Peak value = best K.<br>
+  • <strong>Cluster profiles</strong>: compute mean of each feature per cluster → gives business meaning to each segment.<br>
+  • <strong>Centroids</strong>: the "average member" of each cluster — useful for describing customer archetypes.</div>
+
+  <div class="info info-case"><strong>Real-world use cases:</strong><br>
+  • GTBank / UBA: Customer segmentation by spending behaviour and account activity<br>
+  • Jumia: Product grouping for recommendation engine<br>
+  • Lagos State Government: Neighbourhood profiling for resource allocation<br>
+  • MUSC Health: Patient cohort identification from ED visit patterns<br>
+  • Dangote: Supply chain route clustering by distance and delivery frequency</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · K-Means · Elbow + Silhouette + Cluster Profiles</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
+import pandas as pd, numpy as np
+
+# Scale first — K-Means uses Euclidean distance
+scaler = StandardScaler()
+X_sc = scaler.fit_transform(X)
+
+# Elbow + Silhouette to find best K
+k_range    = range(2, 11)
+inertias   = []
+sil_scores = []
+for k in k_range:
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    labels = km.fit_predict(X_sc)
+    inertias.append(km.inertia_)
+    sil_scores.append(silhouette_score(X_sc, labels))
+
+best_k = list(k_range)[np.argmax(sil_scores)]
+print(f"Best K = {best_k} | Silhouette = {max(sil_scores):.4f}")
+
+# Fit final model
+km_final = KMeans(n_clusters=best_k, random_state=42, n_init=10)
+df['Cluster'] = km_final.fit_predict(X_sc)
+
+# Cluster profiles (mean per cluster)
+profile = df.groupby('Cluster').mean().round(2)
+print(profile)
+
+# Predict new point
+new_point = scaler.transform([[value1, value2, ...]])
+cluster   = km_final.predict(new_point)
+print(f"New customer belongs to Cluster {cluster[0]}")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 3: HIERARCHICAL -->
+<section class="section" id="hierarchical">
+  <div class="section-header">
+    <h2>3. Hierarchical Clustering</h2>
+    <div class="tags"><span class="tag tag-cls">Clustering</span></div>
+    <p class="desc">Builds a tree of clusters (dendrogram) — cut at any level to get any number of clusters.</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> You do not know K in advance. Small to medium datasets (&lt; 10,000 points). You want to visualize the full cluster hierarchy. Biological taxonomy, document hierarchies, gene expression.</div>
+
+  <h3>Dendrogram Diagram</h3>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Leaves -->
+      <circle cx="80"  cy="170" r="6" fill="#378ADD"/>
+      <circle cx="120" cy="170" r="6" fill="#378ADD"/>
+      <circle cx="200" cy="170" r="6" fill="#1D9E75"/>
+      <circle cx="240" cy="170" r="6" fill="#1D9E75"/>
+      <circle cx="320" cy="170" r="6" fill="#D85A30"/>
+      <circle cx="360" cy="170" r="6" fill="#D85A30"/>
+      <circle cx="400" cy="170" r="6" fill="#D85A30"/>
+      <circle cx="500" cy="170" r="6" fill="#534AB7"/>
+      <circle cx="540" cy="170" r="6" fill="#534AB7"/>
+      <!-- Level 1 merges -->
+      <line x1="80"  y1="164" x2="80"  y2="140" stroke="#888" stroke-width="0.8"/>
+      <line x1="120" y1="164" x2="120" y2="140" stroke="#888" stroke-width="0.8"/>
+      <line x1="80"  y1="140" x2="120" y2="140" stroke="#888" stroke-width="0.8"/>
+      <line x1="100" y1="140" x2="100" y2="120" stroke="#888" stroke-width="0.8"/>
+      <line x1="200" y1="164" x2="200" y2="130" stroke="#888" stroke-width="0.8"/>
+      <line x1="240" y1="164" x2="240" y2="130" stroke="#888" stroke-width="0.8"/>
+      <line x1="200" y1="130" x2="240" y2="130" stroke="#888" stroke-width="0.8"/>
+      <line x1="220" y1="130" x2="220" y2="110" stroke="#888" stroke-width="0.8"/>
+      <line x1="320" y1="164" x2="320" y2="145" stroke="#888" stroke-width="0.8"/>
+      <line x1="360" y1="164" x2="360" y2="145" stroke="#888" stroke-width="0.8"/>
+      <line x1="320" y1="145" x2="360" y2="145" stroke="#888" stroke-width="0.8"/>
+      <line x1="340" y1="145" x2="340" y2="120" stroke="#888" stroke-width="0.8"/>
+      <line x1="340" y1="120" x2="400" y2="120" stroke="#888" stroke-width="0.8"/>
+      <line x1="400" y1="164" x2="400" y2="120" stroke="#888" stroke-width="0.8"/>
+      <line x1="370" y1="120" x2="370" y2="100" stroke="#888" stroke-width="0.8"/>
+      <line x1="500" y1="164" x2="500" y2="140" stroke="#888" stroke-width="0.8"/>
+      <line x1="540" y1="164" x2="540" y2="140" stroke="#888" stroke-width="0.8"/>
+      <line x1="500" y1="140" x2="540" y2="140" stroke="#888" stroke-width="0.8"/>
+      <line x1="520" y1="140" x2="520" y2="110" stroke="#888" stroke-width="0.8"/>
+      <!-- Level 2 merges -->
+      <line x1="100" y1="120" x2="220" y2="120" stroke="#888" stroke-width="0.8"/>
+      <line x1="160" y1="120" x2="160" y2="75" stroke="#888" stroke-width="0.8"/>
+      <line x1="370" y1="100" x2="520" y2="100" stroke="#888" stroke-width="0.8"/>
+      <line x1="445" y1="100" x2="445" y2="75" stroke="#888" stroke-width="0.8"/>
+      <!-- Root -->
+      <line x1="160" y1="75" x2="445" y2="75" stroke="#888" stroke-width="0.8"/>
+      <line x1="302" y1="75" x2="302" y2="50" stroke="#888" stroke-width="0.8"/>
+      <!-- Cut line -->
+      <line x1="30" y1="95" x2="640" y2="95" stroke="#D85A30" stroke-width="1.5" stroke-dasharray="6 3"/>
+      <text x="18" y="93" font-family="sans-serif" font-size="10" fill="#D85A30" text-anchor="start">Cut → 4 clusters</text>
+      <!-- Cluster colour labels -->
+      <text x="100"  y="185" font-family="sans-serif" font-size="10" fill="#378ADD" text-anchor="middle">C1</text>
+      <text x="220"  y="185" font-family="sans-serif" font-size="10" fill="#1D9E75" text-anchor="middle">C2</text>
+      <text x="360"  y="185" font-family="sans-serif" font-size="10" fill="#D85A30" text-anchor="middle">C3</text>
+      <text x="520"  y="185" font-family="sans-serif" font-size="10" fill="#534AB7" text-anchor="middle">C4</text>
+      <!-- Y-axis label -->
+      <text x="655" y="75"  font-family="sans-serif" font-size="10" fill="#888">High dist</text>
+      <text x="655" y="170" font-family="sans-serif" font-size="10" fill="#888">Low dist</text>
+    </svg>
+  </div>
+
+  <h3>Linkage Methods</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Linkage</th><th>Distance between clusters</th><th>Effect</th></tr>
+    <tr><td><strong>ward</strong></td><td>Minimizes within-cluster variance</td><td>Compact, equal-size clusters (most common)</td></tr>
+    <tr><td><strong>complete</strong></td><td>Maximum distance between any two points</td><td>Compact, similar-size clusters</td></tr>
+    <tr><td><strong>average</strong></td><td>Average distance between all pairs</td><td>Between ward and single</td></tr>
+    <tr><td><strong>single</strong></td><td>Minimum distance between any two points</td><td>Chaining effect — elongated clusters</td></tr>
+  </table></div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · Hierarchical Clustering · Dendrogram</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+import matplotlib.pyplot as plt
+
+# Compute linkage matrix
+Z = linkage(X_sc, method='ward')
+
+# Plot dendrogram
+fig, ax = plt.subplots(figsize=(12, 5))
+dendrogram(Z, ax=ax, truncate_mode='lastp', p=30,
+           leaf_rotation=90, color_threshold=0.7*max(Z[:,2]))
+ax.axhline(y=cut_height, color='red', lw=2, linestyle='--',
+           label=f'Cut at height={cut_height}')
+ax.set_xlabel('Data Points'); ax.set_ylabel('Distance')
+ax.set_title('Dendrogram — Ward Linkage')
+ax.legend()
+plt.show()
+
+# Fit model with chosen K
+agg = AgglomerativeClustering(n_clusters=4, linkage='ward')
+labels = agg.fit_predict(X_sc)
+
+from sklearn.metrics import silhouette_score
+print(f"Silhouette Score: {silhouette_score(X_sc, labels):.4f}")
+
+# Compare linkage methods
+for method in ['ward','complete','average','single']:
+    ag = AgglomerativeClustering(n_clusters=4, linkage=method)
+    lb = ag.fit_predict(X_sc)
+    s  = silhouette_score(X_sc, lb)
+    print(f"  {method}: {s:.4f}")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 4: DBSCAN -->
+<section class="section" id="dbscan">
+  <div class="section-header">
+    <h2>4. DBSCAN</h2>
+    <div class="tags"><span class="tag tag-cls">Clustering</span><span class="tag tag-anom">Anomaly Detection</span></div>
+    <p class="desc">Density-based clustering — finds clusters as dense regions, automatically identifies outliers as noise.</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> Arbitrary cluster shapes (moons, rings, elongated). Do not know K in advance. Outlier detection is important. Spatial / geographic data.</div>
+
+  <h3>Core / Border / Noise Point Diagram</h3>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Dense cluster -->
+      <circle cx="200" cy="110" r="60" fill="#e6f1fb" stroke="#378ADD" stroke-width="1" stroke-dasharray="5 3"/>
+      <circle cx="200" cy="110" r="5"  fill="#378ADD"/>
+      <circle cx="175" cy="95"  r="5"  fill="#378ADD"/>
+      <circle cx="225" cy="90"  r="5"  fill="#378ADD"/>
+      <circle cx="185" cy="130" r="5"  fill="#378ADD"/>
+      <circle cx="215" cy="125" r="5"  fill="#378ADD"/>
+      <circle cx="165" cy="110" r="5"  fill="#1D9E75"/>
+      <!-- eps circle around core point -->
+      <circle cx="200" cy="110" r="35" fill="none" stroke="#378ADD" stroke-width="1" stroke-dasharray="3 2" opacity="0.7"/>
+      <text x="200" y="55" font-family="sans-serif" font-size="11" fill="#378ADD" text-anchor="middle">Core point</text>
+      <text x="200" y="68" font-family="sans-serif" font-size="10" fill="#888" text-anchor="middle">(≥ min_samples within ε)</text>
+      <!-- Border point -->
+      <circle cx="165" cy="110" r="8" fill="none" stroke="#1D9E75" stroke-width="1.5"/>
+      <text x="110" y="108" font-family="sans-serif" font-size="11" fill="#1D9E75" text-anchor="middle">Border</text>
+      <text x="110" y="120" font-family="sans-serif" font-size="10" fill="#888" text-anchor="middle">point</text>
+      <!-- Noise point -->
+      <circle cx="480" cy="80"  r="5" fill="#D85A30"/>
+      <circle cx="520" cy="150" r="5" fill="#D85A30"/>
+      <circle cx="450" cy="140" r="5" fill="#D85A30"/>
+      <text x="500" y="60" font-family="sans-serif" font-size="11" fill="#D85A30" text-anchor="middle">Noise (outliers)</text>
+      <text x="500" y="73" font-family="sans-serif" font-size="10" fill="#888" text-anchor="middle">label = -1</text>
+      <!-- Legend -->
+      <circle cx="50" cy="190" r="5" fill="#378ADD"/>
+      <text x="62" y="194" font-family="sans-serif" font-size="11" fill="#888">Core point</text>
+      <circle cx="150" cy="190" r="5" fill="#1D9E75"/>
+      <text x="162" y="194" font-family="sans-serif" font-size="11" fill="#888">Border point</text>
+      <circle cx="260" cy="190" r="5" fill="#D85A30"/>
+      <text x="272" y="194" font-family="sans-serif" font-size="11" fill="#888">Noise (label=-1)</text>
+      <text x="420" y="194" font-family="sans-serif" font-size="11" fill="#888">Dashed = ε radius</text>
+    </svg>
+  </div>
+
+  <div class="formula">Core point:   has ≥ min_samples neighbours within radius ε
+Border point: within ε of a core point but fewer than min_samples neighbours
+Noise point:  not within ε of any core point → labelled -1 (outlier)</div>
+
+  <h3>Hyperparameter Guide</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Parameter</th><th>Meaning</th><th>How to choose</th></tr>
+    <tr><td><strong>eps (ε)</strong></td><td>Maximum distance between two neighbours</td><td>k-distance graph elbow (k = min_samples)</td></tr>
+    <tr><td><strong>min_samples</strong></td><td>Minimum points to form a core point</td><td>Rule of thumb: 2 × n_features, minimum 5</td></tr>
+  </table></div>
+
+  <div class="info info-interp"><strong>How to interpret results:</strong><br>
+  • Labels <strong>-1 = noise/outliers</strong> — not belonging to any cluster.<br>
+  • Number of clusters: <code>len(set(labels)) - (1 if -1 in labels else 0)</code><br>
+  • High noise count → eps too small or min_samples too high. Reduce eps or min_samples.</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · DBSCAN · eps Selection + Fitting</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+import numpy as np
+
+# Step 1: Choose eps with k-distance graph
+k = 5   # usually = min_samples
+nbrs = NearestNeighbors(n_neighbors=k).fit(X_sc)
+distances, _ = nbrs.kneighbors(X_sc)
+k_dist = np.sort(distances[:, k-1])[::-1]
+
+# Plot k_dist vs index — elbow = suggested eps
+# plt.plot(k_dist); plt.xlabel('Points'); plt.ylabel(f'{k}-NN dist'); plt.show()
+
+# Step 2: Fit DBSCAN
+db = DBSCAN(eps=0.3, min_samples=5)
+labels = db.fit_predict(X_sc)
+
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise    = (labels == -1).sum()
+print(f"Clusters found: {n_clusters}")
+print(f"Noise points:   {n_noise} ({n_noise/len(labels):.1%})")
+
+# Anomaly extraction — noise points are potential outliers
+outlier_indices = np.where(labels == -1)[0]
+X_outliers = X_sc[outlier_indices]
+
+# Silhouette (exclude noise for fair comparison)
+mask = labels != -1
+if mask.sum() > 0 and len(set(labels[mask])) > 1:
+    from sklearn.metrics import silhouette_score
+    sil = silhouette_score(X_sc[mask], labels[mask])
+    print(f"Silhouette (excl. noise): {sil:.4f}")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 5: GMM -->
+<section class="section" id="gmm">
+  <div class="section-header">
+    <h2>5. Gaussian Mixture Models (GMM)</h2>
+    <div class="tags"><span class="tag tag-cls">Clustering</span></div>
+    <p class="desc">Probabilistic soft clustering — each point has a probability of belonging to each component. Handles elliptical clusters.</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> Clusters may be elliptical or have different orientations. Soft (probabilistic) cluster memberships needed. Data comes from mixed distributions. Density estimation required.</div>
+
+  <h3>K-Means vs GMM</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Feature</th><th>K-Means</th><th>GMM</th></tr>
+    <tr><td>Assignment</td><td>Hard (one cluster only)</td><td>Soft (probability of each cluster)</td></tr>
+    <tr><td>Cluster shape</td><td>Spherical only</td><td>Elliptical (flexible covariance)</td></tr>
+    <tr><td>Output</td><td>Cluster label</td><td>Probability distribution</td></tr>
+    <tr><td>Algorithm</td><td>Lloyd's (iterative means)</td><td>EM (Expectation-Maximization)</td></tr>
+    <tr><td>Choose K</td><td>Elbow / Silhouette</td><td>BIC or AIC (lower = better)</td></tr>
+  </table></div>
+
+  <div class="info info-interp"><strong>How to interpret results:</strong><br>
+  • <strong>predict_proba(X)</strong>: gives probability of each cluster for every point.<br>
+  • <strong>BIC / AIC</strong>: choose K with minimum BIC (more conservative) or AIC (less conservative).<br>
+  • <strong>covariance_type='full'</strong>: most flexible — allows ellipses of any shape and orientation.<br>
+  • <strong>score(X)</strong>: log-likelihood — higher = better model fit.</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · GMM · BIC Selection + Soft Probabilities</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.mixture import GaussianMixture
+
+# Choose K using BIC
+bic_scores = []
+for k in range(1, 9):
+    gmm = GaussianMixture(n_components=k, covariance_type='full',
+                          random_state=42, n_init=3)
+    gmm.fit(X_sc)
+    bic_scores.append(gmm.bic(X_sc))
+
+best_k = range(1,9)[np.argmin(bic_scores)]
+print(f"Best K by BIC: {best_k}")
+
+# Fit best GMM
+gmm_best = GaussianMixture(n_components=best_k,
+                            covariance_type='full',
+                            random_state=42, n_init=3)
+gmm_best.fit(X_sc)
+
+# Hard labels (most likely cluster)
+labels_hard = gmm_best.predict(X_sc)
+# Soft probabilities
+labels_soft = gmm_best.predict_proba(X_sc)
+
+print("Soft probabilities for first 3 points:")
+print(labels_soft[:3].round(4))
+
+# Log-likelihood (higher = better fit)
+print(f"Log-likelihood: {gmm_best.score(X_sc):.4f}")
+
+# Anomaly detection: flag low-probability points
+log_proba = gmm_best.score_samples(X_sc)
+threshold = np.percentile(log_proba, 5)  # bottom 5%
+anomalies = log_proba < threshold
+print(f"Anomalies detected: {anomalies.sum()}")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 6: PCA -->
+<section class="section" id="pca">
+  <div class="section-header">
+    <h2>6. Principal Component Analysis (PCA)</h2>
+    <div class="tags"><span class="tag tag-dr">Dimensionality Reduction</span></div>
+    <p class="desc">Finds directions of maximum variance in data and projects onto those axes. Linear, fast, interpretable.</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> Reduce dimensionality before training another model. Visualize high-dimensional data. Remove multicollinearity. Compress images or signals. Speed up training.</div>
+  <div class="info info-warn"><strong>Avoid when:</strong> Need interpretable original features. Class discrimination matters more than variance (use LDA). Data has non-linear structure (use t-SNE or UMAP for visualization).</div>
+
+  <h3>PCA Diagram — Variance Directions</h3>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#D85A30" stroke-width="1.5" stroke-linecap="round"/></marker>
+        <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/></marker>
+      </defs>
+      <!-- Data points (elliptical cloud) -->
+      <ellipse cx="280" cy="110" rx="130" ry="55" fill="#e6f1fb" stroke="#378ADD" stroke-width="0.5" opacity="0.5"/>
+      <circle cx="200" cy="130" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="230" cy="115" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="255" cy="100" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="280" cy="95"  r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="300" cy="108" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="320" cy="115" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="350" cy="125" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="240" cy="135" r="4" fill="#378ADD" opacity="0.7"/>
+      <circle cx="310" cy="90"  r="4" fill="#378ADD" opacity="0.7"/>
+      <!-- PC1 — direction of maximum variance -->
+      <line x1="155" y1="145" x2="415" y2="75" stroke="#D85A30" stroke-width="2.5" marker-end="url(#a3)"/>
+      <text x="420" y="72" font-family="sans-serif" font-size="12" font-weight="600" fill="#D85A30">PC1 (max variance)</text>
+      <!-- PC2 — perpendicular -->
+      <line x1="280" y1="55" x2="280" y2="165" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <text x="286" y="48" font-family="sans-serif" font-size="11" fill="#1D9E75">PC2 (⊥ to PC1)</text>
+      <!-- Projection example -->
+      <circle cx="255" cy="100" r="5" fill="#BA7517"/>
+      <line x1="255" y1="100" x2="230" y2="108" stroke="#BA7517" stroke-width="1" stroke-dasharray="3 2"/>
+      <circle cx="230" cy="108" r="4" fill="#BA7517" opacity="0.6"/>
+      <text x="200" y="82" font-family="sans-serif" font-size="11" fill="#BA7517">projection onto PC1</text>
+      <!-- Formula -->
+      <text x="540" y="110" font-family="sans-serif" font-size="12" fill="#888" text-anchor="middle">X_reduced = X · W</text>
+      <text x="540" y="128" font-family="sans-serif" font-size="11" fill="#888" text-anchor="middle">W = top-k eigenvectors</text>
+      <text x="540" y="146" font-family="sans-serif" font-size="11" fill="#888" text-anchor="middle">of covariance matrix</text>
+    </svg>
+  </div>
+
+  <div class="info info-interp"><strong>How to interpret results:</strong><br>
+  • <strong>explained_variance_ratio_</strong>: % of total variance captured by each PC. Sum until 80–95%.<br>
+  • <strong>Scree plot</strong>: bar chart of explained variance — choose n_components at the elbow.<br>
+  • <strong>Loadings (components_)</strong>: how much each original feature contributes to each PC.<br>
+  • <strong>Reconstruction error</strong>: MSE between original and inverse-transformed data — lower = better.</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · PCA · Full Analysis Pipeline</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import numpy as np, pandas as pd
+
+# Always scale before PCA
+scaler = StandardScaler()
+X_sc = scaler.fit_transform(X)
+
+# Step 1: Fit PCA with all components to inspect variance
+pca_full = PCA(random_state=42)
+pca_full.fit(X_sc)
+
+# Cumulative explained variance
+cum_var = np.cumsum(pca_full.explained_variance_ratio_)
+n_80 = np.argmax(cum_var >= 0.80) + 1   # components for 80%
+n_95 = np.argmax(cum_var >= 0.95) + 1   # components for 95%
+print(f"Components for 80% variance: {n_80}")
+print(f"Components for 95% variance: {n_95}")
+
+# Step 2: Fit PCA with chosen n_components
+pca = PCA(n_components=n_95, random_state=42)
+X_reduced = pca.fit_transform(X_sc)
+print(f"Reduced shape: {X_sc.shape} → {X_reduced.shape}")
+
+# Step 3: Reconstruction error
+X_recon = pca.inverse_transform(X_reduced)
+mse = np.mean((X_sc - X_recon)**2)
+print(f"Reconstruction MSE: {mse:.4f}")
+
+# Step 4: Feature loadings (which features dominate each PC)
+loadings = pd.DataFrame(
+    pca.components_.T,
+    index=feature_names,
+    columns=[f'PC{i+1}' for i in range(n_95)]
+)
+print("\\nTop contributing features to PC1:")
+print(loadings['PC1'].abs().sort_values(ascending=False).head(5))
+
+# Step 5: Visualize in 2D
+pca_2d = PCA(n_components=2)
+X_2d   = pca_2d.fit_transform(X_sc)
+# plt.scatter(X_2d[:,0], X_2d[:,1], c=labels, cmap='tab10')
+# plt.xlabel(f'PC1 ({pca_2d.explained_variance_ratio_[0]:.1%})')
+# plt.ylabel(f'PC2 ({pca_2d.explained_variance_ratio_[1]:.1%})')</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 7: t-SNE -->
+<section class="section" id="tsne">
+  <div class="section-header">
+    <h2>7. t-SNE</h2>
+    <div class="tags"><span class="tag tag-dr">Dimensionality Reduction</span></div>
+    <p class="desc">Non-linear visualization method — preserves local neighbourhood structure. For 2D/3D plots only.</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> Exploring high-dimensional data visually (images, embeddings, genomics). Best 2D separation of complex clusters. After PCA to further refine visualization.</div>
+  <div class="info info-warn"><strong>Critical limitations — t-SNE is for VISUALIZATION ONLY:</strong><br>
+  • <strong>Cannot transform new data</strong> — no out-of-sample projection.<br>
+  • <strong>Inter-cluster distances are not meaningful</strong> — only within-cluster neighbourhood is preserved.<br>
+  • <strong>Slow on large datasets</strong> — use PCA first to reduce to ~50 dims, then t-SNE.<br>
+  • <strong>Always try multiple perplexity values</strong> — the output changes significantly.</div>
+
+  <h3>Perplexity Guide</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Perplexity</th><th>Focus</th><th>Effect</th></tr>
+    <tr><td>5–10</td><td>Very local</td><td>Many small tight clusters, fragmented view</td></tr>
+    <tr><td>30 (default)</td><td>Balanced</td><td>Good general-purpose starting point</td></tr>
+    <tr><td>50–100</td><td>More global</td><td>Larger, smoother clusters</td></tr>
+  </table></div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · t-SNE · Best Practices</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
+
+# Best practice: PCA first (to ~50 dims) then t-SNE
+pca_50 = PCA(n_components=min(50, X_sc.shape[1]), random_state=42)
+X_pca50 = pca_50.fit_transform(X_sc)
+
+# t-SNE
+tsne = TSNE(
+    n_components=2,
+    perplexity=30,        # try 5, 30, 50
+    learning_rate=200,    # 'auto' in sklearn >= 1.2
+    n_iter=1000,
+    random_state=42,
+    init='pca'            # better convergence than random
+)
+X_tsne = tsne.fit_transform(X_pca50)
+
+# Visualize
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8,6))
+scatter = plt.scatter(X_tsne[:,0], X_tsne[:,1],
+                      c=labels, cmap='tab10', alpha=0.6, s=15)
+plt.colorbar(scatter, label='Class/Cluster')
+plt.title('t-SNE 2D Visualization')
+plt.xlabel('t-SNE 1'); plt.ylabel('t-SNE 2')
+plt.show()
+
+# IMPORTANT: t-SNE does NOT support transform() for new data
+# For new data projection → use UMAP instead</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 8: UMAP -->
+<section class="section" id="umap">
+  <div class="section-header">
+    <h2>8. UMAP</h2>
+    <div class="tags"><span class="tag tag-dr">Dimensionality Reduction</span></div>
+    <p class="desc">Modern non-linear reduction — faster than t-SNE, supports out-of-sample projection, preserves global structure.</p>
+  </div>
+
+  <h3>UMAP vs t-SNE vs PCA</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Feature</th><th>PCA</th><th>t-SNE</th><th>UMAP</th></tr>
+    <tr><td>Linear?</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><td>Global structure</td><td>Excellent</td><td>Poor</td><td>Good</td></tr>
+    <tr><td>Local structure</td><td>Moderate</td><td>Excellent</td><td>Excellent</td></tr>
+    <tr><td>Speed</td><td>Very fast</td><td>Slow</td><td>Fast</td></tr>
+    <tr><td>New data transform?</td><td>Yes</td><td><strong>No</strong></td><td><strong>Yes</strong></td></tr>
+    <tr><td>Use for modelling?</td><td>Yes</td><td>No</td><td><strong>Yes</strong></td></tr>
+  </table></div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · UMAP · Visualization + Out-of-Sample Transform</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre># pip install umap-learn
+from umap import UMAP
+
+reducer = UMAP(
+    n_components=2,
+    n_neighbors=15,    # local vs global tradeoff (5–50)
+    min_dist=0.1,      # tightness in low-dim space (0.0–0.5)
+    metric='euclidean',
+    random_state=42
+)
+X_umap = reducer.fit_transform(X_sc)
+
+# Visualize
+import matplotlib.pyplot as plt
+plt.scatter(X_umap[:,0], X_umap[:,1], c=labels,
+            cmap='tab10', alpha=0.6, s=15)
+plt.title('UMAP 2D Visualization')
+plt.show()
+
+# UMAP supports out-of-sample projection (unlike t-SNE!)
+X_new_reduced = reducer.transform(X_new_sc)
+print(f"New data: {X_new_sc.shape} → {X_new_reduced.shape}")
+
+# For dimensionality reduction pipeline (n_components > 2)
+reducer_50 = UMAP(n_components=50, random_state=42)
+X_umap_50  = reducer_50.fit_transform(X_sc)
+# Use X_umap_50 as input features to downstream classifier</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 9: AUTOENCODER -->
+<section class="section" id="autoencoder">
+  <div class="section-header">
+    <h2>9. Autoencoders</h2>
+    <div class="tags"><span class="tag tag-dr">Dimensionality Reduction</span><span class="tag tag-anom">Anomaly Detection</span></div>
+    <p class="desc">Neural network that compresses and reconstructs its own input. Bottleneck = learned representation. High reconstruction error = anomaly.</p>
+  </div>
+
+  <h3>Architecture Diagram</h3>
+  <div class="diagram">
+    <svg width="100%" viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+      <rect x="10"  y="55" width="90"  height="50" rx="8" fill="#e6f1fb" stroke="#378ADD" stroke-width="0.8"/>
+      <text x="55"  y="77" font-family="sans-serif" font-size="11" font-weight="600" fill="#042C53" text-anchor="middle">Input X</text>
+      <text x="55"  y="92" font-family="sans-serif" font-size="10" fill="#0C447C" text-anchor="middle">d features</text>
+      <line x1="102" y1="80" x2="135" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a5)"/>
+      <rect x="137" y="42" width="130" height="76" rx="8" fill="#eeedfe" stroke="#534AB7" stroke-width="0.8"/>
+      <text x="202" y="70" font-family="sans-serif" font-size="12" font-weight="600" fill="#26215C" text-anchor="middle">Encoder</text>
+      <text x="202" y="88" font-family="sans-serif" font-size="11" fill="#3C3489" text-anchor="middle">128 → 64 → 32</text>
+      <text x="202" y="106" font-family="sans-serif" font-size="10" fill="#534AB7" text-anchor="middle">Compress</text>
+      <line x1="269" y1="80" x2="302" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a5)"/>
+      <rect x="304" y="55" width="80"  height="50" rx="8" fill="#faeeda" stroke="#BA7517" stroke-width="1.5"/>
+      <text x="344" y="75" font-family="sans-serif" font-size="12" font-weight="600" fill="#412402" text-anchor="middle">Latent z</text>
+      <text x="344" y="92" font-family="sans-serif" font-size="10" fill="#633806" text-anchor="middle">bottleneck</text>
+      <line x1="386" y1="80" x2="418" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a5)"/>
+      <rect x="420" y="42" width="130" height="76" rx="8" fill="#eeedfe" stroke="#534AB7" stroke-width="0.8"/>
+      <text x="485" y="70" font-family="sans-serif" font-size="12" font-weight="600" fill="#26215C" text-anchor="middle">Decoder</text>
+      <text x="485" y="88" font-family="sans-serif" font-size="11" fill="#3C3489" text-anchor="middle">32 → 64 → 128</text>
+      <text x="485" y="106" font-family="sans-serif" font-size="10" fill="#534AB7" text-anchor="middle">Reconstruct</text>
+      <line x1="552" y1="80" x2="585" y2="80" stroke="#888" stroke-width="1" marker-end="url(#a5)"/>
+      <rect x="587" y="55" width="82"  height="50" rx="8" fill="#eaf3de" stroke="#639922" stroke-width="0.8"/>
+      <text x="628" y="75" font-family="sans-serif" font-size="11" font-weight="600" fill="#173404" text-anchor="middle">Output X̂</text>
+      <text x="628" y="92" font-family="sans-serif" font-size="10" fill="#3B6D11" text-anchor="middle">≈ X</text>
+      <text x="344" y="140" font-family="sans-serif" font-size="11" fill="#888" text-anchor="middle">Train to minimise: MSE(X, X̂) = reconstruction error</text>
+    </svg>
+  </div>
+
+  <div class="info info-interp"><strong>How to use for anomaly detection:</strong><br>
+  1. Train autoencoder ONLY on normal/clean data.<br>
+  2. Compute reconstruction error on all data (including test).<br>
+  3. Set threshold at 95th–99th percentile of normal data's error.<br>
+  4. Points with error above threshold = <strong>anomaly</strong>.<br>
+  The model fails to reconstruct anomalies well because it never saw them during training.</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · Autoencoder · Keras + Anomaly Detection</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+
+# Build autoencoder
+def build_autoencoder(input_dim, latent_dim=8):
+    # Encoder
+    encoder_input = keras.Input(shape=(input_dim,))
+    x = layers.Dense(64, activation='relu')(encoder_input)
+    x = layers.Dense(32, activation='relu')(x)
+    latent = layers.Dense(latent_dim, activation='relu',
+                           name='latent')(x)
+    # Decoder
+    x = layers.Dense(32, activation='relu')(latent)
+    x = layers.Dense(64, activation='relu')(x)
+    output = layers.Dense(input_dim, activation='linear')(x)
+
+    autoencoder = keras.Model(encoder_input, output)
+    autoencoder.compile(optimizer='adam', loss='mse')
+    return autoencoder
+
+ae = build_autoencoder(input_dim=X_train.shape[1], latent_dim=4)
+
+# Train ONLY on normal data
+history = ae.fit(
+    X_normal_sc, X_normal_sc,   # target = input itself!
+    epochs=50, batch_size=32,
+    validation_split=0.1,
+    callbacks=[keras.callbacks.EarlyStopping(patience=5)],
+    verbose=0
+)
+
+# Compute reconstruction errors on all data
+X_reconstructed = ae.predict(X_all_sc, verbose=0)
+recon_error = np.mean((X_all_sc - X_reconstructed)**2, axis=1)
+
+# Threshold at 95th percentile of normal errors
+threshold = np.percentile(recon_error[:len(X_normal_sc)], 95)
+predictions = (recon_error > threshold).astype(int)
+print(f"Anomalies detected: {predictions.sum()}")
+print(f"Threshold: {threshold:.4f}")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 10: ASSOCIATION RULES -->
+<section class="section" id="apriori">
+  <div class="section-header">
+    <h2>10. Association Rule Mining (Apriori / FP-Growth)</h2>
+    <div class="tags"><span class="tag tag-assoc">Association Rules</span></div>
+    <p class="desc">Discovers co-occurrence patterns in transactional data — "customers who buy X also buy Y."</p>
+  </div>
+  <div class="info info-when"><strong>When to use:</strong> Market basket analysis. Product recommendation engines. Cross-sell and upsell strategy. Pharmacy co-prescription analysis. Any domain with transactional data.</div>
+
+  <h3>Key Concepts</h3>
+  <div class="formula">Support(A→B)    = P(A ∩ B) = transactions with both A and B / total transactions
+Confidence(A→B) = P(B|A) = P(A ∩ B) / P(A) — if A bought, probability B bought
+Lift(A→B)       = Confidence / P(B) — how much more likely than by chance?
+                  Lift > 1 → positive association
+                  Lift = 1 → independent
+                  Lift < 1 → negative association</div>
+
+  <h3>How to Interpret Rules</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Rule</th><th>Support</th><th>Confidence</th><th>Lift</th><th>Meaning</th></tr>
+    <tr><td>Phone → Phone Case</td><td>0.35</td><td>0.82</td><td>2.8</td><td>Strong: buying phone → 82% buy case, 2.8× more likely</td></tr>
+    <tr><td>Laptop → Laptop Bag</td><td>0.28</td><td>0.75</td><td>2.3</td><td>Strong: buying laptop → 75% buy bag</td></tr>
+    <tr><td>T-Shirt → Jeans</td><td>0.15</td><td>0.45</td><td>1.1</td><td>Weak: only slightly better than chance</td></tr>
+  </table></div>
+
+  <div class="info info-interp"><strong>Focus on:</strong> High confidence + high lift rules. Support tells you how common the pair is. Confidence tells you how reliable the rule is. Lift tells you how much better than random.</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · Apriori · Market Basket Analysis</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre># pip install mlxtend
+from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.preprocessing import TransactionEncoder
+import pandas as pd
+
+# Transaction list
+transactions = [
+    ['Phone', 'Phone Case', 'Charger'],
+    ['Laptop', 'Laptop Bag', 'Mouse'],
+    ['Phone', 'Earphones', 'Screen Protector'],
+    # ... more transactions
+]
+
+# Encode as boolean matrix
+te = TransactionEncoder()
+te_array = te.fit_transform(transactions)
+df_trans  = pd.DataFrame(te_array, columns=te.columns_)
+
+# Mine frequent itemsets
+freq_items = apriori(df_trans,
+                      min_support=0.05,     # 5% min frequency
+                      use_colnames=True,
+                      max_len=3)            # max 3 items
+
+# Generate association rules
+rules = association_rules(freq_items,
+                          metric='lift',
+                          min_threshold=1.2,
+                          num_itemsets=len(freq_items))
+
+# Sort by lift (strongest associations first)
+rules = rules.sort_values('lift', ascending=False)
+
+# Display top rules
+top = rules[['antecedents','consequents',
+             'support','confidence','lift']].head(10)
+top['antecedents'] = top['antecedents'].apply(
+    lambda x: ', '.join(list(x)))
+top['consequents'] = top['consequents'].apply(
+    lambda x: ', '.join(list(x)))
+print(top.round(4).to_string(index=False))
+
+# Actionable: Filter high-confidence rules for cross-sell
+cross_sell = rules[(rules['confidence'] > 0.7) &
+                   (rules['lift'] > 1.5)]
+print(f"\\nHigh-value cross-sell rules: {len(cross_sell)}")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 11: ANOMALY DETECTION -->
+<section class="section" id="anomaly">
+  <div class="section-header">
+    <h2>11. Anomaly Detection</h2>
+    <div class="tags"><span class="tag tag-anom">Anomaly Detection</span></div>
+    <p class="desc">Identifies rare, unusual data points that differ significantly from the majority — no labels required.</p>
+  </div>
+
+  <h3>Four Major Algorithms</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Algorithm</th><th>Approach</th><th>Best for</th></tr>
+    <tr><td><strong>Isolation Forest</strong></td><td>Anomalies are easier to isolate — shorter path in random trees</td><td>High-dimensional tabular, large datasets</td></tr>
+    <tr><td><strong>Local Outlier Factor (LOF)</strong></td><td>Points in low-density regions relative to neighbours</td><td>Lower-dimensional, density-based outliers</td></tr>
+    <tr><td><strong>One-Class SVM</strong></td><td>Learn boundary around normal data, flag outside points</td><td>Complex boundary, small dataset</td></tr>
+    <tr><td><strong>Elliptic Envelope</strong></td><td>Fit multivariate Gaussian, flag statistical outliers</td><td>Near-Gaussian data, few features</td></tr>
+  </table></div>
+
+  <div class="info info-interp"><strong>How to interpret results:</strong><br>
+  • Labels: <strong>-1 = anomaly, 1 = normal</strong> (sklearn convention).<br>
+  • <strong>decision_function(X)</strong>: anomaly score. More negative = more anomalous.<br>
+  • <strong>contamination</strong>: expected fraction of outliers. Set to match domain knowledge (e.g. 0.02 for 2% fraud rate).<br>
+  • Tune threshold on a labelled validation set if ground truth is available.</div>
+
+  <div class="info info-case"><strong>Real-world use cases:</strong><br>
+  • GTBank / First Bank: Credit card fraud detection (real-time transaction scoring)<br>
+  • MUSC Health: Unusual patient vital signs in ED monitoring<br>
+  • Dangote: Manufacturing defect detection from sensor readings<br>
+  • UBA Compliance: AML suspicious transaction flagging<br>
+  • Jumia: Fake product listing detection from listing features<br>
+  • Network security: Intrusion detection system</div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · Anomaly Detection · Four Algorithms</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.ensemble import IsolationForest
+from sklearn.neighbors import LocalOutlierFactor
+from sklearn.svm import OneClassSVM
+from sklearn.covariance import EllipticEnvelope
+
+# Contamination = expected fraction of anomalies
+contamination = 0.05   # 5% fraud rate
+
+# 1. Isolation Forest (best general-purpose)
+iso = IsolationForest(contamination=contamination,
+                       n_estimators=200,
+                       random_state=42, n_jobs=-1)
+labels_iso   = iso.fit_predict(X_sc)   # -1=anomaly, 1=normal
+scores_iso   = iso.decision_function(X_sc)  # more negative = anomaly
+
+# 2. Local Outlier Factor
+lof = LocalOutlierFactor(contamination=contamination,
+                          novelty=False)
+labels_lof = lof.fit_predict(X_sc)
+# For novel point prediction, use novelty=True and lof.predict()
+
+# 3. One-Class SVM (train on normal data only)
+ocsvm = OneClassSVM(nu=contamination)
+ocsvm.fit(X_normal_sc)       # fit on normal only
+labels_svm = ocsvm.predict(X_all_sc)
+
+# 4. Elliptic Envelope
+ee = EllipticEnvelope(contamination=contamination,
+                       random_state=42)
+labels_ee = ee.fit_predict(X_sc)
+
+# Count anomalies
+for name, labels in [('Isolation Forest', labels_iso),
+                      ('LOF', labels_lof),
+                      ('One-Class SVM', labels_svm),
+                      ('Elliptic Envelope', labels_ee)]:
+    n_anom = (labels == -1).sum()
+    print(f"{name}: {n_anom} anomalies ({n_anom/len(labels):.1%})")</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<!-- SECTION 12: EVALUATION -->
+<section class="section" id="eval">
+  <div class="section-header">
+    <h2>12. Evaluation Metrics for Unsupervised Learning</h2>
+    <p class="desc">No ground truth labels — use internal metrics. Use external metrics only when labels are available for validation.</p>
+  </div>
+
+  <h3>Clustering — Internal Metrics (no labels needed)</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Metric</th><th>Range</th><th>Good value</th><th>What it measures</th></tr>
+    <tr><td><strong>Silhouette Score</strong></td><td>-1 to 1</td><td>Close to 1</td><td>Tightness within clusters vs separation between clusters</td></tr>
+    <tr><td><strong>Davies-Bouldin Index</strong></td><td>0 to ∞</td><td>Close to 0</td><td>Ratio of within-cluster to between-cluster distances</td></tr>
+    <tr><td><strong>Calinski-Harabasz Index</strong></td><td>0 to ∞</td><td>High</td><td>Between-cluster vs within-cluster dispersion</td></tr>
+    <tr><td><strong>Inertia</strong></td><td>0 to ∞</td><td>Lower</td><td>Sum of squared distances to nearest centroid (K-Means)</td></tr>
+  </table></div>
+
+  <h3>Clustering — External Metrics (when ground truth labels available)</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Metric</th><th>Range</th><th>Good value</th><th>Notes</th></tr>
+    <tr><td><strong>Adjusted Rand Index (ARI)</strong></td><td>-1 to 1</td><td>Close to 1</td><td>Agreement with true labels, corrected for chance</td></tr>
+    <tr><td><strong>Normalized Mutual Info (NMI)</strong></td><td>0 to 1</td><td>Close to 1</td><td>Information shared between clusters and true labels</td></tr>
+    <tr><td><strong>Homogeneity</strong></td><td>0 to 1</td><td>Close to 1</td><td>Each cluster contains only one class</td></tr>
+    <tr><td><strong>Completeness</strong></td><td>0 to 1</td><td>Close to 1</td><td>All members of a class are in the same cluster</td></tr>
+  </table></div>
+
+  <h3>Algorithm Selection Summary</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Task</th><th>Algorithm</th><th>When to choose</th></tr>
+    <tr><td>Clustering</td><td><strong>K-Means</strong></td><td>Fast, known K, spherical clusters, large data</td></tr>
+    <tr><td>Clustering</td><td><strong>Hierarchical</strong></td><td>Unknown K, dendrogram needed, small data</td></tr>
+    <tr><td>Clustering</td><td><strong>DBSCAN</strong></td><td>Arbitrary shapes, noise/outliers present, unknown K</td></tr>
+    <tr><td>Clustering</td><td><strong>GMM</strong></td><td>Soft probabilities, elliptical clusters, BIC selection</td></tr>
+    <tr><td>Dim. Reduction</td><td><strong>PCA</strong></td><td>Linear, preprocessing, interpretable loadings</td></tr>
+    <tr><td>Visualization</td><td><strong>t-SNE</strong></td><td>Best local separation, single-use visualization</td></tr>
+    <tr><td>Viz + Pipeline</td><td><strong>UMAP</strong></td><td>Global structure, fast, supports transform()</td></tr>
+    <tr><td>Feature learning</td><td><strong>Autoencoder</strong></td><td>Non-linear, anomaly detection, image compression</td></tr>
+    <tr><td>Pattern mining</td><td><strong>Apriori/FP-Growth</strong></td><td>Transaction data, co-occurrence rules, recommendations</td></tr>
+    <tr><td>Anomaly detection</td><td><strong>Isolation Forest</strong></td><td>High-dimensional, large tabular data</td></tr>
+    <tr><td>Anomaly detection</td><td><strong>LOF</strong></td><td>Low-dimensional, density-based outliers</td></tr>
+  </table></div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">Python · Complete Clustering Evaluation Toolkit</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>from sklearn.metrics import (
+    silhouette_score, davies_bouldin_score,
+    calinski_harabasz_score,
+    adjusted_rand_score, normalized_mutual_info_score,
+    homogeneity_score, completeness_score
+)
+
+def evaluate_clustering(X_sc, labels, y_true=None, name='Model'):
+    """Full clustering evaluation report."""
+    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+    if n_clusters < 2:
+        print(f"{name}: only {n_clusters} cluster — cannot evaluate"); return
+
+    # Internal
+    sil = silhouette_score(X_sc, labels)
+    db  = davies_bouldin_score(X_sc, labels)
+    ch  = calinski_harabasz_score(X_sc, labels)
+
+    print(f"\\n{'='*50}")
+    print(f"{name}")
+    print(f"{'='*50}")
+    print(f"  Clusters found:       {n_clusters}")
+    print(f"  Silhouette Score:     {sil:.4f}  (↑ higher better, >0.5 = good)")
+    print(f"  Davies-Bouldin:       {db:.4f}   (↓ lower better)")
+    print(f"  Calinski-Harabasz:    {ch:.1f}   (↑ higher better)")
+
+    # External (if labels available)
+    if y_true is not None:
+        ari  = adjusted_rand_score(y_true, labels)
+        nmi  = normalized_mutual_info_score(y_true, labels)
+        hom  = homogeneity_score(y_true, labels)
+        comp = completeness_score(y_true, labels)
+        print(f"  Adjusted Rand Index:  {ari:.4f}  (↑ higher better)")
+        print(f"  Normalized Mutual Info: {nmi:.4f}")
+        print(f"  Homogeneity:          {hom:.4f}")
+        print(f"  Completeness:         {comp:.4f}")
+
+    return {'sil': sil, 'db': db, 'ch': ch}
+
+# Usage
+from sklearn.cluster import KMeans
+km = KMeans(n_clusters=4, random_state=42, n_init=10)
+labels = km.fit_predict(X_sc)
+metrics = evaluate_clustering(X_sc, labels,
+                               y_true=y_true,   # optional
+                               name='K-Means (k=4)')</pre>
+  </div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</section>
+
+<footer>
+  <p><strong>Prodigy Training Hub</strong> &nbsp;|&nbsp; Trainer: <strong>Kajola Gbenga</strong> &nbsp;|&nbsp; CEO, Prodigy Training Hub</p>
+  <p style="margin-top:6px">Data Science &amp; Machine Learning Masterclass Programme</p>
+  <p style="margin-top:4px;font-size:12px">This document is the intellectual property of Prodigy Training Hub. Designed for educational use within the Data Science &amp; ML programme.</p>
+</footer>
+
+</div>
+<script>
+function copyCode(btn){
+  const pre=btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(()=>{
+    btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+</script>
+</body>
+</html>
