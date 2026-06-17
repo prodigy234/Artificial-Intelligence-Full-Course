@@ -1,0 +1,33 @@
+{
+  "model_name": "Digit Recognition CNN",
+  "architecture": "Conv2D(32,64,128) + Dense(256) + Dropout(0.5)",
+  "version": "1.0",
+  "training_date": "2026-06-16 15:46:46",
+  "tensorflow_version": "2.21.0",
+  "keras_version": "3.14.1",
+  "input_shape": [
+    28,
+    28,
+    1
+  ],
+  "num_classes": 10,
+  "class_names": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "test_accuracy": 0.9694444537162781,
+  "training_info": {
+    "epochs_trained": 20,
+    "batch_size": 64,
+    "optimizer": "Adam (lr=0.001)",
+    "loss": "sparse_categorical_crossentropy"
+  }
+}
